@@ -5,10 +5,38 @@
     <link></link>
     <description>EmiyaCC的个人博客</description>
     <language>zh-CN</language>
-    <pubDate>Sun, 30 May 2021 14:18:15 +0800</pubDate>
-    <lastBuildDate>Sun, 30 May 2021 14:18:15 +0800</lastBuildDate>
+    <pubDate>Sun, 30 May 2021 20:09:52 +0800</pubDate>
+    <lastBuildDate>Sun, 30 May 2021 20:09:52 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     <atom:link href="/static/xml/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>朴素贝叶斯法</title>
+      <link>/posts/2021/03/08/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF.html</link>
+      <description>朴素贝叶斯法[toc]摘录自《统计学习方法》朴素贝叶斯（NaiveBayes）法是基于贝叶斯定理和特征条件独立假设的分类方法。对于给定的训练数据集，首先基于特征条件独立假设学习输入输出的联合概率分布；然后基于此模型，对给定的输入$x$...</description>
+      <pubDate>Mon, 08 Mar 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/03/08/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF.html</gui>
+    </item>
+    <item>
+      <title>支持向量机</title>
+      <link>/posts/2021/03/07/SVM.html</link>
+      <description>支持向量机（SVM）[toc]本文摘录《统计学习方法》SVM简介支持向量机（supportvectormachines，SVM）是一种二分类模型。SVM的基础模型是定义在特征空间上的间隔最大的线性分类器，间隔最大使它有别于感知机；SV...</description>
+      <pubDate>Sun, 07 Mar 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/03/07/SVM.html</gui>
+    </item>
+    <item>
+      <title>隐马尔可夫模型</title>
+      <link>/posts/2021/03/06/HMM.html</link>
+      <description>隐马尔可夫模型（HMM）[toc]本文摘抄自《统计学习方法》隐马尔可夫模型（HiddenMarkovModel,HMM）是可用于标注问题的统计学习模型，描述由隐藏的马尔科夫链随机生成观测序列的过程，属于生成模型。HMM的基本概念HMM...</description>
+      <pubDate>Sat, 06 Mar 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/03/06/HMM.html</gui>
+    </item>
+    <item>
+      <title>条件随机场</title>
+      <link>/posts/2021/03/05/CRF.html</link>
+      <description>条件随机场（CRF）[toc]图来自Anintroductiontoconditionalrandomfields本文摘抄自《统计学习方法》条件随机场（ConditionalRandomField,CRF）是给定一组输入随机变量条件下...</description>
+      <pubDate>Fri, 05 Mar 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/03/05/CRF.html</gui>
+    </item>
     <item>
       <title>梯度下降算法的更新概述</title>
       <link>/posts/2021/03/04/GD%E7%9A%84%E6%9B%B4%E6%96%B0%E6%A6%82%E8%BF%B0.html</link>

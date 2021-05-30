@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>朴素贝叶斯法-EmiyaCC Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="content-language" content="zh-CN" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="supported-color-schemes" content="light dark">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="applicable-device" content="pc,mobile">
+  <meta name="google-site-verification" content="ckhUaoa05QCmWoE1FafzTBcqYI4yBOy-UJKopXDS18M" />
+  <meta name="author" content="EmiyaCC" />
+  <meta name="description" content="朴素贝叶斯法"/>
+  <meta name="keywords" content="EmiyaCC,NB,机器学习"/>
+  <link rel="icon" href="/static/img/favicon.ico" />
+  <link rel="apple-touch-icon" href="/static/img/logo.png" />
+  <link rel="stylesheet" href="/static/css/common.css?t=20210530200952">
+  <link rel="stylesheet" href="/static/css/theme-dark.css?t=20210530200952">
+  <link rel="stylesheet" href="/static/css/post.css?t=20210530200952">
+  <link rel="stylesheet" href="/static/css/code-dark.css?t=20210530200952">
+  <link rel="stylesheet" href="/static/css/code-light.css?t=20210530200952">
+  <script>
+    window.blog = {
+      baseurl:"",
+      buildAt:"20210530200952",
+      darkTheme: false,
+      setDarkTheme: function (dark) {
+        this.darkTheme = Boolean(dark);
+        document.documentElement.className = this.darkTheme ? 'dark': '';
+        document.querySelector('meta[name=theme-color]').setAttribute('content', this.darkTheme ? '#2D2E32': '#FFFFFF');
+      }
+    }
+    if (sessionStorage.darkTheme !== undefined) {
+      blog.setDarkTheme(sessionStorage.darkTheme === 'true'); // 记忆值，单个窗口内有效
+    } else {
+      blog.setDarkTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches); // 跟随系统
+    }
+    if (window.matchMedia) {
+      var media = window.matchMedia('(prefers-color-scheme: dark)');
+      media.addListener(function (ev) {
+        blog.setDarkTheme(ev.currentTarget.matches);
+        sessionStorage.removeItem('darkTheme');
+      });
+    }
+  </script>
+</head>
+<body ondragstart="return false;">
+<header class="header">
+  <img class="logo" src="/static/img/logo.jpg" alt="logo"/>
+  <nav class="menu">
+    <a href="/" class="hover-underline">首页</a>
+    <a href="/pages/categories.html" class="hover-underline">归类</a>
+    <a href="/pages/search.html" class="hover-underline">搜索</a>
+    <a href="/pages/links.html" class="hover-underline">友链</a>
+    <a href="/pages/about.html" class="hover-underline">关于</a>
+    </nav>
+</header>
+<div class="page page-post">
+  <h1 class="title" id="朴素贝叶斯法">朴素贝叶斯法</h1>
+  
+  <div class="subtitle">EmiyaCC 于 2021-03-08 发布</div>
+  
+  <div class="post">
+    <div class="toc">
+      <ul><li><a href="#朴素贝叶斯法">朴素贝叶斯法</a><ul><li><a href="#朴素贝叶斯法的学习与分类">朴素贝叶斯法的学习与分类</a><ul><li><a href="#基本方法">基本方法</a></li><li><a href="#后验概率最大化含义">后验概率最大化含义</a></li></ul></li><li><a href="#朴素贝叶斯法的参数估计">朴素贝叶斯法的参数估计</a><ul><li><a href="#极大似然估计">极大似然估计</a></li><li><a href="#学习与分类算法">学习与分类算法</a></li><li><a href="#贝叶斯估计">贝叶斯估计</a></li></ul></li></ul></li></ul>
+
+    </div>
+    <h1 id="朴素贝叶斯法">朴素贝叶斯法</h1>
+
+<p>[toc]</p>
+
+<blockquote>
+  <p>摘录自《统计学习方法》</p>
+
+  <p>朴素贝叶斯（Naive Bayes）法是基于贝叶斯定理和特征条件独立假设的分类方法。对于给定的训练数据集，首先基于特征条件独立假设学习输入输出的联合概率分布；然后基于此模型，对给定的输入 $x$，利用贝叶斯定理求出后验概率最大的输出 $y$。朴素贝叶斯法实现简单，学习与预测效率都很高。</p>
+</blockquote>
+
+<h2 id="朴素贝叶斯法的学习与分类">朴素贝叶斯法的学习与分类</h2>
+
+<h3 id="基本方法">基本方法</h3>
+
+<blockquote>
+  <p>设输入空间 $\mathcal{X} \subseteq \mathrm{R}^n$ 为 $n$ 维向量的集合，输出空间为类标记集合 $\mathcal{Y}={c_1,c_2,…,c_K}$。输入的特征向量 $x \in \mathcal{X}$，输出为类标记（class label）$y \in \mathcal{Y}$。$X$ 是定 义在输入空间 $\mathcal{X}$ 上的随机向量，$Y$ 是定义在输出空间 $\mathcal{Y}$ 上的随机变量。$P(X,Y)$ 是 $X$ 和 $Y$ 的联合概率分布。训练数据集：
+<script type="math/tex">T=\{(x_1,y_1), (x_2, y_2), ..., (x_N, y_N)\}</script>
+由 $P(X,Y)$ 独立同分布产生。</p>
+
+  <p>朴素贝叶斯法通过训练数据集学习联合概率分布 $P(X,Y)$，具体的，学习以下先验概率分布及条件概率分布。</p>
+
+  <ul>
+    <li>
+      <p>先验概率分布：
+<script type="math/tex">P(Y=c_k),~~k=1,2,...,K</script></p>
+    </li>
+    <li>
+      <p>条件概率分布：
+<script type="math/tex">P(X=x|Y=c_k) = P(X^{(1)}=x^{(1)},...,X^{(n)}=x^{(n)}|Y=c_k), ~~k=1,2,...K</script></p>
+    </li>
+  </ul>
+
+  <p>由于条件概率分布 $P(X=x|Y=c_k)$ 有指数级数量的参数，所以朴素贝叶斯法对条件概率分布做了条件独立性的假设：
+<script type="math/tex">% <![CDATA[
+\begin{align}
+P(X=x|Y=c_k) &= P(X^{(1)}=x^{(1)},...,X^{(n)}=x^{(n)}|Y=c_k), ~~k=1,2,...K \\
+&= \prod_{j=1}^n P(X^{(j)}=x^{(j)}|Y=c_k)
+\end{align} %]]></script>
+朴素贝叶斯法实际上学习到生成数据的机制，属于生成模型。条件独立假设等于是说用于分类的特征在类确定的条件下都是条件独立的。这一假设使朴素贝叶斯法简单，但也会损失一定分类准确度。</p>
+</blockquote>
+
+<blockquote>
+  <p>朴素贝叶斯法分类时，对给定的输入 $x$，通过学习到的模型计算后验概率分布 $P(Y=c_k|X=x)$，将后验概率最大的类作为 $x$ 的类输出。后验概率：
+<script type="math/tex">% <![CDATA[
+\begin{align}
+P(Y=c_k|X=x) &= \frac{P(X=x|Y=c_k)P(Y=c_k)}{\sum_{k=1}^K P(X=x|Y=c_k)P(Y=c_k)} \\
+&= \frac{P(Y=c_k)\prod_{j=1}^n P(X^{(j)}=x^{(j)}|Y=c_k)}{\sum_{k=1}^K P(Y=c_k)\prod_{j=1}^n P(X^{(j)}=x^{(j)}|Y=c_k)}
+\end{align} %]]></script>
+于是朴素贝叶斯分类器可表示为：
+<script type="math/tex">y = f(x) = \arg \max_{c_k} \frac{P(Y=c_k)\prod_{j=1}^n P(X^{(j)}=x^{(j)}|Y=c_k)}{\sum_{k=1}^K P(Y=c_k)\prod_{j=1}^n P(X^{(j)}=x^{(j)}|Y=c_k)}</script>
+由于所求的 $y_{c_k}$ 分母相同，所以上式可化简为：
+<script type="math/tex">y = f(x) = \arg \max_{c_k} P(Y=c_k)\prod_{j=1}^n P(X^{(j)}=x^{(j)}|Y=c_k)</script></p>
+</blockquote>
+
+<h3 id="后验概率最大化含义">后验概率最大化含义</h3>
+
+<blockquote>
+  <p>朴素贝叶斯法将实例分到后验概率最大的类中，这等价于期望风险最小化。假设选择 0-1 损失函数：
+<script type="math/tex">% <![CDATA[
+L(Y,f(X)) = \begin{cases}
+1, & y \ne f(X) \\
+0, & y = f(X)
+\end{cases} %]]></script></p>
+
+  <blockquote>
+    <p>其中， $f(X)$ 是分类决策函数</p>
+  </blockquote>
+
+  <p>这时，期望风险函数为：
+<script type="math/tex">\mathrm{R}_{exp}(f) = E[L(Y,f(X))]</script>
+期望是对联合分布 $P(X,Y)$ 取得，由此取条件期望：
+<script type="math/tex">\mathrm{R}_{exp}(f) = E_X \sum_{k=1}^K [L(c_k, f(X))]P(c_k|X)</script>
+为了使期望风险最小化，只需要对 $X=x$ 逐个最小化，得：
+<script type="math/tex">% <![CDATA[
+\begin{align}
+f(x) &= \arg \min_{y \in \mathcal{Y}} \sum_{k=1}^K L(c_k,y)P(c_k|X=x) \\
+&= \arg \min_{y \in \mathcal{Y}} \sum_{k=1}^K P(y \ne c_k|X=x) \\
+&= \arg \min_{y \in \mathcal{Y}} (1 - P(y=c_k|X=x)) \\
+&= \arg \max_{y \in \mathcal{Y}} P(y=c_k|X=x)
+\end{align} %]]></script>
+这样，根据期望风险最小化准则得到后验概率最大化准组（朴素贝叶斯法采用的原理）：
+<script type="math/tex">f(x) = \arg \max_{c_k} p(c_k|X=x)</script></p>
+</blockquote>
+
+<h2 id="朴素贝叶斯法的参数估计">朴素贝叶斯法的参数估计</h2>
+
+<h3 id="极大似然估计">极大似然估计</h3>
+
+<blockquote>
+  <p>在朴素贝叶斯法中，学习意味着估计 $P(Y=c_k)$ 和 $P(X^{(j)}=x^{(j)}|Y=c_k)$。可以应用极大似然估计法估计相应的概率。先验概率 $P(Y=c_k)$ 的极大似然估计是：
+<script type="math/tex">P(Y=c_k) = \frac{\sum_{i=1}^N I(y_i=c_k)}{N},~~k=1,2,...,K</script>
+设第 $j$ 个特征 $x^{(j)}$ 可能取值的集合为 ${a_{j1},a_{j2},…,a_{jS_j}}$，条件概率 $P(X^{(j)}=a_{jl}|Y=c_k)$ 的极大似然估计是：
+<script type="math/tex">P(X^{(j)}=a_{jl}|Y=c_k) = \frac{\sum_{i=1}^N I(x_i^{(j)}=a_{jl},y_i=c_k)}{\sum_{i=1}^N I(y_i=c_k)} \\
+j = 1,2,..,n; ~~l = 1,2,...,S_j;~~k=1,2,...K</script></p>
+
+  <blockquote>
+    <p>其中，$x_i^{(j)}$ 是第 $i$ 个样本的第 $j$ 个特征 ；$a_{jl}$ 是第 $j$ 个特征 可能取得第 $l$ 个值；$I$ 为指示函数</p>
+  </blockquote>
+</blockquote>
+
+<h3 id="学习与分类算法">学习与分类算法</h3>
+
+<blockquote>
+  <p>输入：训练数据 $T={(x_1,y_1), (x_2, y_2), …, (x_N, y_N)}$，实例 $x$
+输出：实例 $x$ 的分类</p>
+
+  <blockquote>
+    <p>其中 $x_i=(x_i^{(1)},x_i^{(2)},…,x_i^{(n)})^T$。$x_i^{(j)}$ 是第 $i$ 个样本的第 $j$ 个特征，$x_i^{(j)} \in {a_{j1},a_{j2},…,a_{jS_j}}$，$a_{jl}$ 是第 $j$ 个特征可能取得第 $l$ 个值，$j = 1,2,..,n; <del>l = 1,2,…,S_j;</del>y_i \in {c_1, c_2, …,c_K}$</p>
+  </blockquote>
+
+  <ol>
+    <li>
+      <p>计算先验概率及条件概率：
+<script type="math/tex">P(Y=c_k) = \frac{\sum_{i=1}^N I(y_i=c_k)}{N},~~k=1,2,...,K \\
+P(X^{(j)}=a_{jl}|Y=c_k) = \frac{\sum_{i=1}^N I(x_i^{(j)}=a_{jl},y_i=c_k)}{\sum_{i=1}^N I(y_i=c_k)} \\
+j = 1,2,..,n; ~~l = 1,2,...,S_j;~~k=1,2,...K</script></p>
+    </li>
+    <li>
+      <p>对于给定的实例 $x=(x^{(1)},x^{(2)},…,x^{(n)})^T$，计算：
+<script type="math/tex">P(Y=c_k)\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k), ~~k=1,2,...,K</script></p>
+    </li>
+    <li>
+      <p>确定实例 $x$ 的类：
+<script type="math/tex">y = \arg \max_{c_k} P(Y=c_k)\prod_{j=1}^nP(X^{(j)}=x^{(j)}|Y=c_k), ~~k=1,2,...,K</script></p>
+    </li>
+  </ol>
+</blockquote>
+
+<h3 id="贝叶斯估计">贝叶斯估计</h3>
+
+<blockquote>
+  <p>用极大似然估计可能会出现所要估计的概率值为 $0$ 的情况，这会影响后验概率的计算结果，使分类产生偏差。为解决这一问题，可使用贝叶斯估计：
+<script type="math/tex">P_{\lambda}(X^{(j)}=a_{jl}|Y=c_k) = \frac{\sum_{i=1}^N I(x_i^{(j)}=a_{jl},y_i=c_k) + \lambda}{\sum_{i=1}^N I(y_i=c_k) + S_j \lambda} \\
+j = 1,2,..,n; ~~l = 1,2,...,S_j;~~k=1,2,...K</script></p>
+
+  <blockquote>
+    <p>其中，$\lambda \geqslant 0$</p>
+  </blockquote>
+
+  <p>等价于在随机变量各个取值的频数上赋予一个正数 $\lambda &gt; 0$，当 $\lambda = 0$ 时就是极大似然估计。常取 $\lambda = 1$，这时叫拉普拉斯平滑（Laplacian smoothing）。</p>
+
+  <p>显然，对任何 $l=1,2,…,S_j, k = 1,2,…,K$，有：
+<script type="math/tex">P_{\lambda}(X^{(j)}=a_{jl}|Y=c_k) > 0 \\
+\sum_{l=1}^{S_j} P_{\lambda}(X^{(j)}=a_{jl}|Y=c_k) = 1</script>
+同样，先验概率的贝叶斯估计是：
+<script type="math/tex">P(Y=c_k) = \frac{\sum_{i=1}^N I(y_i=c_k)+\lambda}{N+K\lambda},~~k=1,2,...,K</script></p>
+</blockquote>
+
+
+  </div>
+  
+</div>
+<footer class="footer">
+  <span>Copyright © TMaize</span>
+  <span>Theme By</span>
+  <a href="https://github.com/TMaize/tmaize-blog">TMaize</a>
+</footer>
+<div id="to-top">
+  <span></span>
+  <span></span>
+</div>
+<script type="text/javascript" src="/static/js/blog.js?t=20210530200952"></script>
+<script type="text/javascript" src="/static/js/search.js?t=20210530200952"></script>
+<!-- 点击页面文字冒出特效 -->
+<script>
+;(function(){
+  var textArr = ['富强', '民主', '文明', '和谐', '自由', '平等', '公正', '法治', '爱国', '敬业', '诚信', '友善']
+  window.blog.initClickEffect(textArr)
+})()
+</script>
+
+<!-- 腾讯MTA移动分析 -->
+<script>
+  var _mtac = {performanceMonitor: 1, senseQuery: 1}
+  ;(function() {
+    if (window.location.hostname == '127.0.0.1') {
+      return
+    }
+    var mta = document.createElement('script')
+    mta.src = '//pingjs.qq.com/h5/stats.js?v2.0.4'
+    mta.setAttribute('name', 'MTAH5')
+    mta.setAttribute('sid', '500581966')
+    mta.setAttribute('cid', '500581972')
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(mta, s)
+  })()
+</script>
+
+<!-- 百度自动推送 -->
+<script>
+  ;(function () {
+    if (window.location.hostname == '127.0.0.1') {
+      return
+    }
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+
+<!-- MathJax数学公式支持 -->
+<style>
+  .has-jax {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: transparent !important;
+    line-height: normal !important;
+    word-break: normal !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .has-jax * {
+    outline: 0;
+  }
+</style>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false,
+    messageStyle: "none",
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'a']
+    },
+    "HTML-CSS": {
+      showMathMenu: false
+    }
+  });
+  // 父级元素添加类名，便于css控制
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax();
+    var i = 0;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+></script>
+
+
+</body>
+</html>
