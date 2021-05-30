@@ -16,15 +16,15 @@
   <meta name="keywords" content="EmiyaCC,梯度下降,深度学习"/>
   <link rel="icon" href="/static/img/favicon.ico" />
   <link rel="apple-touch-icon" href="/static/img/logo.png" />
-  <link rel="stylesheet" href="/static/css/common.css?t=20210530140921">
-  <link rel="stylesheet" href="/static/css/theme-dark.css?t=20210530140921">
-  <link rel="stylesheet" href="/static/css/post.css?t=20210530140921">
-  <link rel="stylesheet" href="/static/css/code-dark.css?t=20210530140921">
-  <link rel="stylesheet" href="/static/css/code-light.css?t=20210530140921">
+  <link rel="stylesheet" href="/static/css/common.css?t=20210530141815">
+  <link rel="stylesheet" href="/static/css/theme-dark.css?t=20210530141815">
+  <link rel="stylesheet" href="/static/css/post.css?t=20210530141815">
+  <link rel="stylesheet" href="/static/css/code-dark.css?t=20210530141815">
+  <link rel="stylesheet" href="/static/css/code-light.css?t=20210530141815">
   <script>
     window.blog = {
       baseurl:"",
-      buildAt:"20210530140921",
+      buildAt:"20210530141815",
       darkTheme: false,
       setDarkTheme: function (dark) {
         this.darkTheme = Boolean(dark);
@@ -62,11 +62,11 @@
   
   <div class="subtitle">EmiyaCC 于 2021-03-03 发布</div>
   
-  <div class="toc">
-    <ul><li><a href="#梯度下降优化算法总览"><a href="https://ruder.io/optimizing-gradient-descent/index.html#additionalstrategiesforoptimizingsgd">梯度下降优化算法总览</a></a><ul><li><a href="#梯度下降种类">梯度下降种类</a><ul><li><a href="#bgd-批次梯度下降">BGD （批次梯度下降）</a></li><li><a href="#sgd-随机梯度下降">SGD （随机梯度下降）</a></li><li><a href="#mbgd-小批次梯度下降">MBGD （小批次梯度下降）</a></li><li><a href="#挑战">挑战</a></li></ul></li><li><a href="#梯度下降优化算法">梯度下降优化算法</a><ul><li><a href="#momentum">Momentum</a></li><li><a href="#nag-nesterov-accelerated-gradient">NAG (Nesterov Accelerated Gradient)</a></li><li><a href="#adagrad">Adagrad</a></li><li><a href="#adadelta">Adadelta</a></li><li><a href="#rmsprop">RMSprop</a></li><li><a href="#adam-adaptive-moment-estimation">Adam (Adaptive Moment Estimation)</a></li><li><a href="#adamax">AdaMax</a></li><li><a href="#nadam-nesterov-accelerated-adaptive-moment-estimation">Nadam (Nesterov-accelerated Adaptive Moment Estimation)</a></li><li><a href="#amsgrad">AMSGrad</a></li><li><a href="#使用哪个优化算法">使用哪个优化算法？</a></li></ul></li><li><a href="#优化-sgd-的其他策略">优化 SGD 的其他策略</a><ul><li><a href="#shuffling-和课程学习">Shuffling 和课程学习</a></li><li><a href="#batch-normalization">Batch normalization</a></li><li><a href="#early-stopping">Early stopping</a></li><li><a href="#gradient-noise">Gradient noise</a></li></ul></li><li><a href="#ref">Ref</a></li></ul></li></ul>
-
-  </div>
   <div class="post">
+    <div class="toc">
+      <ul><li><a href="#梯度下降优化算法总览"><a href="https://ruder.io/optimizing-gradient-descent/index.html#additionalstrategiesforoptimizingsgd">梯度下降优化算法总览</a></a><ul><li><a href="#梯度下降种类">梯度下降种类</a><ul><li><a href="#bgd-批次梯度下降">BGD （批次梯度下降）</a></li><li><a href="#sgd-随机梯度下降">SGD （随机梯度下降）</a></li><li><a href="#mbgd-小批次梯度下降">MBGD （小批次梯度下降）</a></li><li><a href="#挑战">挑战</a></li></ul></li><li><a href="#梯度下降优化算法">梯度下降优化算法</a><ul><li><a href="#momentum">Momentum</a></li><li><a href="#nag-nesterov-accelerated-gradient">NAG (Nesterov Accelerated Gradient)</a></li><li><a href="#adagrad">Adagrad</a></li><li><a href="#adadelta">Adadelta</a></li><li><a href="#rmsprop">RMSprop</a></li><li><a href="#adam-adaptive-moment-estimation">Adam (Adaptive Moment Estimation)</a></li><li><a href="#adamax">AdaMax</a></li><li><a href="#nadam-nesterov-accelerated-adaptive-moment-estimation">Nadam (Nesterov-accelerated Adaptive Moment Estimation)</a></li><li><a href="#amsgrad">AMSGrad</a></li><li><a href="#使用哪个优化算法">使用哪个优化算法？</a></li></ul></li><li><a href="#优化-sgd-的其他策略">优化 SGD 的其他策略</a><ul><li><a href="#shuffling-和课程学习">Shuffling 和课程学习</a></li><li><a href="#batch-normalization">Batch normalization</a></li><li><a href="#early-stopping">Early stopping</a></li><li><a href="#gradient-noise">Gradient noise</a></li></ul></li><li><a href="#ref">Ref</a></li></ul></li></ul>
+
+    </div>
     <h1 id="梯度下降优化算法总览"><a href="https://ruder.io/optimizing-gradient-descent/index.html#additionalstrategiesforoptimizingsgd">梯度下降优化算法总览</a></h1>
 
 <p>[toc]</p>
@@ -483,8 +483,8 @@ v_t = \beta_2 v_{t-1} + (1 - \beta_2) g_t^2 \\
   <span></span>
   <span></span>
 </div>
-<script type="text/javascript" src="/static/js/blog.js?t=20210530140921"></script>
-<script type="text/javascript" src="/static/js/search.js?t=20210530140921"></script>
+<script type="text/javascript" src="/static/js/blog.js?t=20210530141815"></script>
+<script type="text/javascript" src="/static/js/search.js?t=20210530141815"></script>
 <!-- 点击页面文字冒出特效 -->
 <script>
 ;(function(){

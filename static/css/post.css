@@ -13,8 +13,8 @@
   color: #999999;
 }
 
-.page-post .toc {
-  font-size: 8px;
+.page-post .post .toc {
+  font-size: 1px;
 }
 
 .page-post .post > * {
