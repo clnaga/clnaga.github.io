@@ -5,10 +5,24 @@
     <link></link>
     <description>EmiyaCC的个人博客</description>
     <language>zh-CN</language>
-    <pubDate>Thu, 27 May 2021 20:23:27 +0800</pubDate>
-    <lastBuildDate>Thu, 27 May 2021 20:23:27 +0800</lastBuildDate>
+    <pubDate>Sun, 30 May 2021 14:09:21 +0800</pubDate>
+    <lastBuildDate>Sun, 30 May 2021 14:09:21 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     <atom:link href="/static/xml/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>梯度下降算法的更新概述</title>
+      <link>/posts/2021/03/04/GD%E7%9A%84%E6%9B%B4%E6%96%B0%E6%A6%82%E8%BF%B0.html</link>
+      <description>最近的梯度下降算法的更新概述[toc]对之前的总结和补充VanillaGradientDescent现代深度学习优化器的故事始于朴素梯度下降。朴素梯度下降遵循以下迭代，具有一定的学习速率参数$\eta$：其中loss是从整个训练数据集...</description>
+      <pubDate>Thu, 04 Mar 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/03/04/GD%E7%9A%84%E6%9B%B4%E6%96%B0%E6%A6%82%E8%BF%B0.html</gui>
+    </item>
+    <item>
+      <title>梯度下降优化算法总览</title>
+      <link>/posts/2021/03/03/GD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%E6%80%BB%E8%A7%88.html</link>
+      <description>梯度下降优化算法总览[toc]优化指的是改变$\theta$以最小化或最大化某个函数$J(\theta)$的任务。我们通常以最小化$J(\theta)$指代大多数最优化问题。最大化可经由最小化算法最小化$-J(\theta)$来实现。...</description>
+      <pubDate>Wed, 03 Mar 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/03/03/GD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%E6%80%BB%E8%A7%88.html</gui>
+    </item>
     <item>
       <title>主题预览</title>
       <link>/posts/2015/01/01/%E4%B8%BB%E9%A2%98%E9%A2%84%E8%A7%88.html</link>

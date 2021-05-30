@@ -8,6 +8,9 @@
   {% if page.date %}
   <div class="subtitle">{{site.author}} 于 {{ page.date | date: "%Y-%m-%d" }} 发布</div>
   {% endif %}
+  <div class="toc">
+    {% include toc.html html=content %}
+  </div>
   <div class="post">
     {{ content }}
   </div>

@@ -12,6 +12,11 @@
   font-size: 12px;
   color: #999999;
 }
+
+.page-post .toc {
+  font-size: 8px;
+}
+
 .page-post .post > * {
   margin: 18px 0;
 }
@@ -25,13 +30,13 @@
   font-size: 17px;
   position: relative;
 }
-.page-post .post h1::before,
+/* .page-post .post h1::before,
 .page-post .post h2::before {
   content: '#';
   top: 0;
   font-weight: bold;
   padding-right: 6px;
-}
+} */
 .page-post h3,
 .page-post h4,
 .page-post h5,

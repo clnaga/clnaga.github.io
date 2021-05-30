@@ -60,4 +60,6 @@ links:
   - title: TMaize
     url: https://blog.tmaize.net/
 
+# add markdown toc
+markdown: kramdown
     
