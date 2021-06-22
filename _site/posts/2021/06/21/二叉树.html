@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>二叉树-EmiyaCC Blog</title>
+  <meta charset="utf-8" />
+  <meta http-equiv="content-language" content="zh-CN" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="supported-color-schemes" content="light dark">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="applicable-device" content="pc,mobile">
+  <meta name="google-site-verification" content="ckhUaoa05QCmWoE1FafzTBcqYI4yBOy-UJKopXDS18M" />
+  <meta name="author" content="EmiyaCC" />
+  <meta name="description" content="二叉树"/>
+  <meta name="keywords" content="EmiyaCC,刷题"/>
+  <link rel="icon" href="/static/img/favicon.ico" />
+  <link rel="apple-touch-icon" href="/static/img/logo.png" />
+  <link rel="stylesheet" href="/static/css/common.css?t=20210622203029">
+  <link rel="stylesheet" href="/static/css/theme-dark.css?t=20210622203029">
+  <link rel="stylesheet" href="/static/css/post.css?t=20210622203029">
+  <link rel="stylesheet" href="/static/css/code-dark.css?t=20210622203029">
+  <link rel="stylesheet" href="/static/css/code-light.css?t=20210622203029">
+  <script>
+    window.blog = {
+      baseurl:"",
+      buildAt:"20210622203029",
+      darkTheme: false,
+      setDarkTheme: function (dark) {
+        this.darkTheme = Boolean(dark);
+        document.documentElement.className = this.darkTheme ? 'dark': '';
+        document.querySelector('meta[name=theme-color]').setAttribute('content', this.darkTheme ? '#2D2E32': '#FFFFFF');
+      }
+    }
+    if (sessionStorage.darkTheme !== undefined) {
+      blog.setDarkTheme(sessionStorage.darkTheme === 'true'); // 记忆值，单个窗口内有效
+    } else {
+      blog.setDarkTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches); // 跟随系统
+    }
+    if (window.matchMedia) {
+      var media = window.matchMedia('(prefers-color-scheme: dark)');
+      media.addListener(function (ev) {
+        blog.setDarkTheme(ev.currentTarget.matches);
+        sessionStorage.removeItem('darkTheme');
+      });
+    }
+  </script>
+</head>
+<body ondragstart="return false;">
+<header class="header">
+  <img class="logo" src="/static/img/logo.jpg" alt="logo"/>
+  <nav class="menu">
+    <a href="/" class="hover-underline">首页</a>
+    <a href="/pages/categories.html" class="hover-underline">归类</a>
+    <a href="/pages/search.html" class="hover-underline">搜索</a>
+    <a href="/pages/links.html" class="hover-underline">友链</a>
+    <a href="/pages/about.html" class="hover-underline">关于</a>
+    </nav>
+</header>
+<div class="page page-post">
+  <h1 class="title" id="二叉树">二叉树</h1>
+  
+  <div class="subtitle">EmiyaCC 于 2021-06-21 发布</div>
+  
+  <div class="post">
+    <div class="toc">
+      <ul><li><a href="#操作二叉树">操作二叉树</a><ul><li><a href="#翻转二叉树"><a href="https://leetcode-cn.com/problems/invert-binary-tree/">翻转二叉树</a></a></li><li><a href="#填充每个节点的下一个右侧节点指针"><a href="https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/">填充每个节点的下一个右侧节点指针</a></a></li></ul></li></ul></li><li><a href="#二叉树转链表">二叉树转链表</a><ul><li><a href="#二叉树展开为链表"><a href="https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/">二叉树展开为链表</a></a></li></ul></li></ul></li><li><a href="#链表转二叉树">链表转二叉树</a><ul><li><a href="#最大二叉树"><a href="https://leetcode-cn.com/problems/maximum-binary-tree/">最大二叉树</a></a></li><li><a href="#从前序与中序遍历序列构造二叉树"><a href="https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/">从前序与中序遍历序列构造二叉树</a></a></li><li><a href="#从中序与后序遍历序列构造二叉树"><a href="https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/">从中序与后序遍历序列构造二叉树</a></a></li><li><a href="#寻找重复的子树"><a href="https://leetcode-cn.com/problems/find-duplicate-subtrees/">寻找重复的子树</a></a></li></ul></li></ul></li><li><a href="#高频面试题">高频面试题</a><ul><li><a href="#二叉树的最近公共祖先"><a href="https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/">二叉树的最近公共祖先</a></a></li></ul></li></ul></li></ul>
+
+    </div>
+    <p><strong>快速排序就是个二叉树的前序遍历，归并排序就是个二叉树的后序遍历</strong></p>
+
+<h2 id="操作二叉树">操作二叉树</h2>
+
+<p><strong>关于二叉树的操作，无非是 BFS 和 DFS（应该），大体的框架也可以总结出来</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// DFS</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="no">E</span> <span class="nf">function</span><span class="o">(</span><span class="no">E</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+        <span class="no">E</span> <span class="n">left</span> <span class="o">=</span> <span class="n">function</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+        <span class="no">E</span> <span class="n">right</span> <span class="o">=</span> <span class="n">function</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="c1">// 此处是一些操作，位置可以变，在后面就是后序遍历，其他位置同理</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// BFS 不分层</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="no">E</span> <span class="nf">function</span><span class="o">(</span><span class="no">E</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+        <span class="nc">Queue</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">&lt;&gt;();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="k">while</span> <span class="o">(!</span><span class="n">queue</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="no">E</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+            <span class="c1">// 此处是一些操作</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// BFS 分层</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="no">E</span> <span class="nf">function</span><span class="o">(</span><span class="no">E</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+        <span class="nc">Queue</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">&lt;&gt;();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="k">while</span> <span class="o">(!</span><span class="n">queue</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="c1">// 对比不分层，此处多了一个计数</span>
+            <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span> <span class="o">++)</span> <span class="o">{</span>
+                <span class="no">E</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+                <span class="c1">// 此处是一些操作</span>
+            	<span class="k">if</span> <span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+            	<span class="k">if</span> <span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+    <span class="o">}</span> 
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="翻转二叉树"><a href="https://leetcode-cn.com/problems/invert-binary-tree/">翻转二叉树</a></h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 前序遍历 递归 DFS</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">TreeNode</span> <span class="nf">invertTree</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+        <span class="nc">TreeNode</span> <span class="n">left</span> <span class="o">=</span> <span class="n">invertTree</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+        <span class="nc">TreeNode</span> <span class="n">right</span> <span class="o">=</span> <span class="n">invertTree</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="n">root</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">right</span><span class="o">;</span>
+        <span class="n">root</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">left</span><span class="o">;</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 迭代 BFS</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">TreeNode</span> <span class="nf">invertTree</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+        <span class="nc">Queue</span><span class="o">&lt;</span><span class="nc">TreeNode</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">&lt;&gt;();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="k">while</span> <span class="o">(!</span><span class="n">queue</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="nc">TreeNode</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+            <span class="nc">TreeNode</span> <span class="n">left</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="na">left</span><span class="o">;</span>
+            <span class="nc">TreeNode</span> <span class="n">right</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="na">right</span><span class="o">;</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">right</span><span class="o">;</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">left</span><span class="o">;</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">left</span><span class="o">);</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">right</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="填充每个节点的下一个右侧节点指针"><a href="https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/">填充每个节点的下一个右侧节点指针</a></h4>
+
+<p>对于一般的题来说（对于我），BFS 相对来说更好写出来，因为迭代更好理解一点，但是递归写出来就感觉，有大侠之姿（仅仅是帅，一直压栈也不支持）</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 前序遍历 DFS</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">Node</span> <span class="nf">connect</span><span class="o">(</span><span class="nc">Node</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">connectTwoNode</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">,</span> <span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">// 主要是考虑两个节点怎么连接起来，这样可以兼顾到两颗不同子树上的节点的连接问题</span>
+    <span class="kt">void</span> <span class="nf">connectTwoNode</span><span class="o">(</span><span class="nc">Node</span> <span class="n">node1</span><span class="o">,</span> <span class="nc">Node</span> <span class="n">node2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">node1</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">node2</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
+        <span class="n">node1</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">node2</span><span class="o">;</span>
+        <span class="n">connectTwoNode</span><span class="o">(</span><span class="n">node1</span><span class="o">.</span><span class="na">left</span><span class="o">,</span> <span class="n">node1</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="n">connectTwoNode</span><span class="o">(</span><span class="n">node2</span><span class="o">.</span><span class="na">left</span><span class="o">,</span> <span class="n">node2</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="n">connectTwoNode</span><span class="o">(</span><span class="n">node1</span><span class="o">.</span><span class="na">right</span><span class="o">,</span> <span class="n">node2</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// BFS 没什么好说的，对着模板，抄抄就行</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">Node</span> <span class="nf">connect</span><span class="o">(</span><span class="nc">Node</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+        <span class="nc">Queue</span><span class="o">&lt;</span><span class="nc">Node</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">&lt;&gt;();</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="k">while</span> <span class="o">(!</span><span class="n">queue</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+            <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>
+            <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span><span class="o">;</span> <span class="n">i</span> <span class="o">++)</span> <span class="o">{</span>
+                <span class="nc">Node</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+                <span class="c1">// 核心业务段，嗯，一句话</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="o">)</span> <span class="n">tmp</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">peek</span><span class="o">();</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="二叉树转链表">二叉树转链表</h2>
+
+<p><strong>在二叉树中做 DFS，大概分两种，一种是设置个全局变量，一个是函数传参，模板其实跟上面也一样</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 设置全局变量，大力出奇迹，奥里给</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="nc">Queue</span><span class="o">&lt;</span><span class="nc">TreeNode</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">&lt;&gt;();</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">function</span><span class="o">(</span><span class="no">E</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="o">;</span>
+        <span class="n">dfs</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="c1">// 此处是操作</span>
+    <span class="o">}</span>
+	<span class="c1">// 把结点放入队列中</span>
+    <span class="kt">void</span> <span class="nf">dfs</span><span class="o">(</span><span class="no">E</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
+        <span class="c1">// 在前面就是前序遍历</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="n">dfs</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+        <span class="n">dfs</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 函数传参，优雅点</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">function</span><span class="o">(</span><span class="no">E</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="o">;</span>
+        <span class="nc">Queue</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">&lt;&gt;();</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="n">dfs</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">queue</span><span class="o">);</span>
+        <span class="c1">// 此处是操作</span>
+    <span class="o">}</span>
+
+    <span class="nc">Queue</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="nf">dfs</span><span class="o">(</span><span class="no">E</span> <span class="n">root</span><span class="o">,</span> <span class="nc">Queue</span><span class="o">&lt;</span><span class="no">E</span><span class="o">&gt;</span> <span class="n">queue</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">(</span><span class="n">queue</span><span class="o">);</span>
+        <span class="c1">// 在前面就是前序遍历</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="n">dfs</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">,</span> <span class="n">queue</span><span class="o">);</span>
+        <span class="n">dfs</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">,</span> <span class="n">queue</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">LinkedList</span><span class="o">(</span><span class="n">queue</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="二叉树展开为链表"><a href="https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/">二叉树展开为链表</a></h4>
+
+<p>用 BFS 来做这题，首先肯定还是需要 DFS 整个链表的，得到顺序的链表后再去一个一个设置 left 和 right 的值；用 DFS 来做，稍微不好想一点，最后要把做拼接操作</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 使用 BFS ，大力出奇迹，但是空间复杂度不是 O（1），但是好想出来啊，附庸风雅的用传参的形式</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">flatten</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="o">;</span>
+        <span class="nc">Queue</span><span class="o">&lt;</span><span class="nc">TreeNode</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">&lt;&gt;();</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="n">dfs</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">queue</span><span class="o">);</span>
+        <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">size</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">++)</span> <span class="o">{</span>
+            <span class="nc">TreeNode</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+            <span class="n">tmp</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">peek</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nc">Queue</span><span class="o">&lt;</span><span class="nc">TreeNode</span><span class="o">&gt;</span> <span class="nf">dfs</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">,</span> <span class="nc">Queue</span><span class="o">&lt;</span><span class="nc">TreeNode</span><span class="o">&gt;</span> <span class="n">queue</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">(</span><span class="n">queue</span><span class="o">);</span>
+        <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="n">dfs</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">,</span> <span class="n">queue</span><span class="o">);</span>
+        <span class="n">dfs</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">,</span> <span class="n">queue</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">LinkedList</span><span class="o">(</span><span class="n">queue</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span> 
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 递归，后序遍历</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">flatten</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
+        <span class="n">flatten</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+        <span class="n">flatten</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="c1">// 递归中，左右子树已经拉平</span>
+        <span class="nc">TreeNode</span> <span class="n">left</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">;</span>
+        <span class="nc">TreeNode</span> <span class="n">right</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">;</span>
+        <span class="c1">// 把左子树归位</span>
+        <span class="n">root</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="n">root</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">left</span><span class="o">;</span>
+        <span class="c1">// 把右子树归位</span>
+        <span class="nc">TreeNode</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">root</span><span class="o">;</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">tmp</span><span class="o">.</span><span class="na">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="o">.</span><span class="na">right</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="c1">// 把左子树和右子树拼接起来</span>
+        <span class="n">tmp</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">right</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="链表转二叉树">链表转二叉树</h2>
+
+<p>构造一个二叉树，主要是找到根节点位置，借此将原链表分成两半，再分而治之</p>
+
+<h4 id="最大二叉树"><a href="https://leetcode-cn.com/problems/maximum-binary-tree/">最大二叉树</a></h4>
+
+<p>构造最大二叉树，首先找到根节点，也就是最大值的索引，然后分成两半，各自递归，再合并，完事。要注意的是需要构建一个 helper 函数，来帮助定义上下界</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">TreeNode</span> <span class="nf">constructMaximumBinaryTree</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">nums</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nf">build</span><span class="o">(</span><span class="n">nums</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">nums</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nc">TreeNode</span> <span class="nf">build</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">nums</span><span class="o">,</span> <span class="kt">int</span> <span class="n">left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">left</span> <span class="o">&gt;</span> <span class="n">right</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="c1">// 找到数组最大值和最大值索引</span>
+        <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">,</span> <span class="n">maxVal</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">MIN_VALUE</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">left</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">right</span><span class="o">;</span> <span class="n">i</span> <span class="o">++)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">maxVal</span> <span class="o">&lt;</span> <span class="n">nums</span><span class="o">[</span><span class="n">i</span><span class="o">])</span> <span class="o">{</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+                <span class="n">maxVal</span> <span class="o">=</span> <span class="n">nums</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        
+        <span class="nc">TreeNode</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TreeNode</span><span class="o">(</span><span class="n">maxVal</span><span class="o">);</span>
+        <span class="n">root</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">build</span><span class="o">(</span><span class="n">nums</span><span class="o">,</span> <span class="n">left</span><span class="o">,</span> <span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+        <span class="n">root</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">build</span><span class="o">(</span><span class="n">nums</span><span class="o">,</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">right</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="从前序与中序遍历序列构造二叉树"><a href="https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/">从前序与中序遍历序列构造二叉树</a></h4>
+
+<p>先将中序遍历的链表存入 indexMap 中，与上题的区别是上题找位置是一个一个比较找到值，而本题是用前序遍历第一个值就是根节点的特性，大体框架是一样的</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">indexMap</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nc">TreeNode</span> <span class="nf">buildTree</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">preorder</span><span class="o">,</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">inorder</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">preorder</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+        <span class="n">indexMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span> <span class="o">++)</span> <span class="o">{</span>
+            <span class="n">indexMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">inorder</span><span class="o">[</span><span class="n">i</span><span class="o">],</span> <span class="n">i</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="nf">myBuildTree</span><span class="o">(</span><span class="n">preorder</span><span class="o">,</span> <span class="n">inorder</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">TreeNode</span> <span class="nf">myBuildTree</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">preorder</span><span class="o">,</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">inorder</span><span class="o">,</span> <span class="kt">int</span> <span class="n">preorder_left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">preorder_right</span><span class="o">,</span> <span class="kt">int</span> <span class="n">inorder_left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">inorder_right</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">preorder_left</span> <span class="o">&gt;</span> <span class="n">preorder_right</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="kt">int</span> <span class="n">preorder_root</span> <span class="o">=</span> <span class="n">preorder_left</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">inorder_root</span> <span class="o">=</span> <span class="n">indexMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">preorder</span><span class="o">[</span><span class="n">preorder_root</span><span class="o">]);</span>
+        <span class="kt">int</span> <span class="n">size_left_subtree</span> <span class="o">=</span> <span class="n">inorder_root</span> <span class="o">-</span> <span class="n">inorder_left</span><span class="o">;</span>
+
+        <span class="nc">TreeNode</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TreeNode</span><span class="o">(</span><span class="n">preorder</span><span class="o">[</span><span class="n">preorder_root</span><span class="o">]);</span>
+        <span class="n">root</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">myBuildTree</span><span class="o">(</span><span class="n">preorder</span><span class="o">,</span> <span class="n">inorder</span><span class="o">,</span> <span class="n">preorder_left</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">preorder_left</span> <span class="o">+</span> <span class="n">size_left_subtree</span><span class="o">,</span> <span class="n">inorder_left</span><span class="o">,</span> <span class="n">inorder_root</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+        <span class="n">root</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">myBuildTree</span><span class="o">(</span><span class="n">preorder</span><span class="o">,</span> <span class="n">inorder</span><span class="o">,</span> <span class="n">preorder_left</span> <span class="o">+</span> <span class="n">size_left_subtree</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">preorder_right</span><span class="o">,</span> <span class="n">inorder_root</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">inorder_right</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// https://leetcode-cn.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/solution/cong-qian-xu-yu-zhong-xu-bian-li-xu-lie-gou-zao-9/</span>
+</code></pre></div></div>
+
+<h4 id="从中序与后序遍历序列构造二叉树"><a href="https://leetcode-cn.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/">从中序与后序遍历序列构造二叉树</a></h4>
+
+<p>思路同上题</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">Integer</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">indexMap</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nc">TreeNode</span> <span class="nf">buildTree</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">inorder</span><span class="o">,</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">postorder</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">postorder</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+        <span class="n">indexMap</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span> <span class="o">++)</span> <span class="o">{</span>
+            <span class="n">indexMap</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">inorder</span><span class="o">[</span><span class="n">i</span><span class="o">],</span> <span class="n">i</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="nf">myBuildTree</span><span class="o">(</span><span class="n">postorder</span><span class="o">,</span> <span class="n">inorder</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">TreeNode</span> <span class="nf">myBuildTree</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">postorder</span><span class="o">,</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">inorder</span><span class="o">,</span> <span class="kt">int</span> <span class="n">postorder_left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">postorder_right</span><span class="o">,</span> <span class="kt">int</span> <span class="n">inorder_left</span><span class="o">,</span> <span class="kt">int</span> <span class="n">inorder_right</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">postorder_left</span> <span class="o">&gt;</span> <span class="n">postorder_right</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="kt">int</span> <span class="n">postorder_root</span> <span class="o">=</span> <span class="n">postorder_right</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">inorder_root</span> <span class="o">=</span> <span class="n">indexMap</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">postorder</span><span class="o">[</span><span class="n">postorder_root</span><span class="o">]);</span>
+        <span class="kt">int</span> <span class="n">size_left_subtree</span> <span class="o">=</span> <span class="n">inorder_root</span> <span class="o">-</span> <span class="n">inorder_left</span><span class="o">;</span>
+
+        <span class="nc">TreeNode</span> <span class="n">root</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">TreeNode</span><span class="o">(</span><span class="n">postorder</span><span class="o">[</span><span class="n">postorder_root</span><span class="o">]);</span>
+        <span class="c1">// 与上题区别在于边界</span>
+        <span class="n">root</span><span class="o">.</span><span class="na">left</span> <span class="o">=</span> <span class="n">myBuildTree</span><span class="o">(</span><span class="n">postorder</span><span class="o">,</span> <span class="n">inorder</span><span class="o">,</span> <span class="n">postorder_left</span><span class="o">,</span> <span class="n">postorder_left</span> <span class="o">+</span> <span class="n">size_left_subtree</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">inorder_left</span><span class="o">,</span> <span class="n">inorder_root</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
+        <span class="n">root</span><span class="o">.</span><span class="na">right</span> <span class="o">=</span> <span class="n">myBuildTree</span><span class="o">(</span><span class="n">postorder</span><span class="o">,</span> <span class="n">inorder</span><span class="o">,</span> <span class="n">postorder_left</span> <span class="o">+</span> <span class="n">size_left_subtree</span><span class="o">,</span> <span class="n">postorder_right</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">inorder_root</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">inorder_right</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h4 id="寻找重复的子树"><a href="https://leetcode-cn.com/problems/find-duplicate-subtrees/">寻找重复的子树</a></h4>
+
+<p>大体思路是每个节点的形状转换成 String 存储在 map 中，然后递归对比每个节点，如果 map 已经有了就说明两个节点是重复子树的头节点</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Integer</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;&gt;();</span>
+    <span class="nc">LinkedList</span><span class="o">&lt;</span><span class="nc">TreeNode</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LinkedList</span><span class="o">&lt;&gt;();</span>
+
+    <span class="kd">public</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">TreeNode</span><span class="o">&gt;</span> <span class="nf">findDuplicateSubtrees</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">traverse</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">list</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nc">String</span> <span class="nf">traverse</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="s">"#"</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">left</span> <span class="o">=</span> <span class="n">traverse</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">right</span> <span class="o">=</span> <span class="n">traverse</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+        <span class="nc">String</span> <span class="n">compare</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">right</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">root</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">compare</span><span class="o">,</span> <span class="n">map</span><span class="o">.</span><span class="na">getOrDefault</span><span class="o">(</span><span class="n">compare</span><span class="o">,</span> <span class="mi">0</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">compare</span><span class="o">)</span> <span class="o">==</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">root</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="n">compare</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// https://leetcode-cn.com/problems/find-duplicate-subtrees/solution/xun-zhao-zhong-fu-de-zi-shu-by-leetcode/</span>
+</code></pre></div></div>
+
+<h2 id="高频面试题">高频面试题</h2>
+
+<h4 id="二叉树的最近公共祖先"><a href="https://leetcode-cn.com/problems/lowest-common-ancestor-of-a-binary-tree/">二叉树的最近公共祖先</a></h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 核心是找该结点下的子树有没有 p q 结点</span>
+<span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">TreeNode</span> <span class="nf">lowestCommonAncestor</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">,</span> <span class="nc">TreeNode</span> <span class="n">p</span><span class="o">,</span> <span class="nc">TreeNode</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">root</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">root</span> <span class="o">==</span> <span class="n">p</span> <span class="o">||</span> <span class="n">root</span> <span class="o">==</span> <span class="n">q</span><span class="o">)</span> <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+        <span class="nc">TreeNode</span> <span class="n">left</span> <span class="o">=</span> <span class="n">lowestCommonAncestor</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">,</span> <span class="n">p</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
+        <span class="nc">TreeNode</span> <span class="n">right</span> <span class="o">=</span> <span class="n">lowestCommonAncestor</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">,</span> <span class="n">p</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">left</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">&amp;&amp;</span> <span class="n">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">root</span><span class="o">;</span>
+        <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="n">left</span><span class="o">;</span>
+        <span class="k">else</span> <span class="k">return</span> <span class="n">right</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="c1">// K神的剑指offer</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>Reference：</p>
+
+  <ul>
+    <li>https://labuladong.gitee.io/algo</li>
+    <li>https://leetcode-cn.com/problems/</li>
+  </ul>
+</blockquote>
+
+  </div>
+  
+</div>
+<footer class="footer">
+  <span>Copyright © TMaize</span>
+  <span>Theme By</span>
+  <a href="https://github.com/TMaize/tmaize-blog">TMaize</a>
+</footer>
+<div id="to-top">
+  <span></span>
+  <span></span>
+</div>
+<script type="text/javascript" src="/static/js/blog.js?t=20210622203029"></script>
+<script type="text/javascript" src="/static/js/search.js?t=20210622203029"></script>
+<!-- 点击页面文字冒出特效 -->
+<script>
+;(function(){
+  var textArr = ['富强', '民主', '文明', '和谐', '自由', '平等', '公正', '法治', '爱国', '敬业', '诚信', '友善']
+  window.blog.initClickEffect(textArr)
+})()
+</script>
+
+<!-- 腾讯MTA移动分析 -->
+<script>
+  var _mtac = {performanceMonitor: 1, senseQuery: 1}
+  ;(function() {
+    if (window.location.hostname == '127.0.0.1') {
+      return
+    }
+    var mta = document.createElement('script')
+    mta.src = '//pingjs.qq.com/h5/stats.js?v2.0.4'
+    mta.setAttribute('name', 'MTAH5')
+    mta.setAttribute('sid', '500581966')
+    mta.setAttribute('cid', '500581972')
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(mta, s)
+  })()
+</script>
+
+<!-- 百度自动推送 -->
+<script>
+  ;(function () {
+    if (window.location.hostname == '127.0.0.1') {
+      return
+    }
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+
+<!-- MathJax数学公式支持 -->
+<style>
+  .has-jax {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-color: transparent !important;
+    line-height: normal !important;
+    word-break: normal !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .has-jax * {
+    outline: 0;
+  }
+</style>
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    showProcessingMessages: false,
+    messageStyle: "none",
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'a']
+    },
+    "HTML-CSS": {
+      showMathMenu: false
+    }
+  });
+  // 父级元素添加类名，便于css控制
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax();
+    var i = 0;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+<script
+  type="text/javascript"
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+></script>
+
+
+</body>
+</html>

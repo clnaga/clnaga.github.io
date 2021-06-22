@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>关于我-EmiyaCC Blog</title>
+  <title>完全二叉树-EmiyaCC Blog</title>
   <meta charset="utf-8" />
   <meta http-equiv="content-language" content="zh-CN" />
   <meta name="theme-color" content="#ffffff" />
@@ -12,8 +12,8 @@
   <meta name="applicable-device" content="pc,mobile">
   <meta name="google-site-verification" content="ckhUaoa05QCmWoE1FafzTBcqYI4yBOy-UJKopXDS18M" />
   <meta name="author" content="EmiyaCC" />
-  <meta name="description" content="EmiyaCC的个人博客"/>
-  <meta name="keywords" content="EmiyaCC,Blog,Java,Html,JavaScript"/>
+  <meta name="description" content="完全二叉树"/>
+  <meta name="keywords" content="EmiyaCC,刷题"/>
   <link rel="icon" href="/static/img/favicon.ico" />
   <link rel="apple-touch-icon" href="/static/img/logo.png" />
   <link rel="stylesheet" href="/static/css/common.css?t=20210622203029">
@@ -58,17 +58,47 @@
     </nav>
 </header>
 <div class="page page-post">
-  <h1 class="title" id="关于我">关于我</h1>
+  <h1 class="title" id="完全二叉树">完全二叉树</h1>
+  
+  <div class="subtitle">EmiyaCC 于 2021-06-21 发布</div>
   
   <div class="post">
     <div class="toc">
-      
+      <ul><li><a href="#完全二叉树的节点个数"><a href="https://leetcode-cn.com/problems/count-complete-tree-nodes/">完全二叉树的节点个数</a></a></li></ul>
 
     </div>
-    <blockquote>
-  <p>EmiyaCC</p>
+    <p>s</p>
 
-  <p>一个找工作的黑框眼镜男 ：）</p>
+<p>求完全二叉树的节点个数，有两种做法，第一种是当成二叉树一个一个求节点个数；第二种是求左右子树的高度，因为已知是完全二叉树，所以到最后必然是左右子树高度一致</p>
+
+<h4 id="完全二叉树的节点个数"><a href="https://leetcode-cn.com/problems/count-complete-tree-nodes/">完全二叉树的节点个数</a></h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Solution</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">countNodes</span><span class="o">(</span><span class="nc">TreeNode</span> <span class="n">root</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">TreeNode</span> <span class="n">left</span> <span class="o">=</span> <span class="n">root</span><span class="o">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">root</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">leftCount</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">rightCount</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">left</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">left</span><span class="o">.</span><span class="na">left</span><span class="o">;</span>
+            <span class="n">leftCount</span> <span class="o">++;</span>
+        <span class="o">}</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">right</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="n">right</span><span class="o">.</span><span class="na">right</span><span class="o">;</span>
+            <span class="n">rightCount</span> <span class="o">++;</span>
+        <span class="o">}</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">leftCount</span> <span class="o">==</span> <span class="n">rightCount</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span><span class="nc">Math</span><span class="o">.</span><span class="na">pow</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">leftCount</span><span class="o">)</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">countNodes</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">left</span><span class="o">)</span> <span class="o">+</span> <span class="n">countNodes</span><span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">right</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>Reference：</p>
+
+  <ul>
+    <li>https://labuladong.gitee.io/algo/</li>
+  </ul>
 </blockquote>
 
   </div>

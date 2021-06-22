@@ -5,49 +5,91 @@
     <link></link>
     <description>EmiyaCC的个人博客</description>
     <language>zh-CN</language>
-    <pubDate>Sun, 30 May 2021 20:09:52 +0800</pubDate>
-    <lastBuildDate>Sun, 30 May 2021 20:09:52 +0800</lastBuildDate>
+    <pubDate>Tue, 22 Jun 2021 20:30:29 +0800</pubDate>
+    <lastBuildDate>Tue, 22 Jun 2021 20:30:29 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     <atom:link href="/static/xml/rss.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>链表</title>
+      <link>/posts/2021/06/21/%E9%93%BE%E8%A1%A8.html</link>
+      <description>链表反转对于链表的反转，一般有两种方法，递归和迭代，递归比较难以理解，并且效率没有迭代的高，但是写着帅，可以装X。递归的链表翻转第一步，整个翻转：classSolution{publicListNodereverseList(List...</description>
+      <pubDate>Mon, 21 Jun 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/06/21/%E9%93%BE%E8%A1%A8.html</gui>
+    </item>
+    <item>
+      <title>图</title>
+      <link>/posts/2021/06/21/%E5%9B%BE.html</link>
+      <description>图的介绍：https://labuladong.gitee.io/algo/2/18/26/图类似多叉树所有可能的路径//回溯求解classSolution{List&amp;lt;List&amp;lt;Integer&amp;gt;&amp;gt;res=new...</description>
+      <pubDate>Mon, 21 Jun 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/06/21/%E5%9B%BE.html</gui>
+    </item>
+    <item>
+      <title>二叉树</title>
+      <link>/posts/2021/06/21/%E4%BA%8C%E5%8F%89%E6%A0%91.html</link>
+      <description>快速排序就是个二叉树的前序遍历，归并排序就是个二叉树的后序遍历操作二叉树关于二叉树的操作，无非是BFS和DFS（应该），大体的框架也可以总结出来//DFSclassSolution{publicEfunction(Eroot){if(...</description>
+      <pubDate>Mon, 21 Jun 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/06/21/%E4%BA%8C%E5%8F%89%E6%A0%91.html</gui>
+    </item>
+    <item>
+      <title>完全二叉树</title>
+      <link>/posts/2021/06/21/%E4%BA%8C%E5%8F%89%E6%A0%91-%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91.html</link>
+      <description>s求完全二叉树的节点个数，有两种做法，第一种是当成二叉树一个一个求节点个数；第二种是求左右子树的高度，因为已知是完全二叉树，所以到最后必然是左右子树高度一致完全二叉树的节点个数classSolution{publicintcountN...</description>
+      <pubDate>Mon, 21 Jun 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/06/21/%E4%BA%8C%E5%8F%89%E6%A0%91-%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91.html</gui>
+    </item>
+    <item>
+      <title>二叉搜索树</title>
+      <link>/posts/2021/06/21/%E4%BA%8C%E5%8F%89%E6%A0%91-%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91.html</link>
+      <description>二叉搜索树（BinarySearchTree，BST）首先，BST的特性大家应该都很熟悉了：1、对于BST的每一个节点node，左子树节点的值都比node的值要小，右子树节点的值都比node的值大。2、对于BST的每一个节点node，...</description>
+      <pubDate>Mon, 21 Jun 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/06/21/%E4%BA%8C%E5%8F%89%E6%A0%91-%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91.html</gui>
+    </item>
+    <item>
+      <title>Java常用函数归总</title>
+      <link>/posts/2021/06/21/Java%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0.html</link>
+      <description>Java操作摘录于《labuladong的算法小抄》数组intm=5,n=10;//初始化一个大小为10的int数组//其中的值默认初始化为0int[]nums=newint[n];//初始化一个m*n的二维布尔数组//其中的元素默认...</description>
+      <pubDate>Mon, 21 Jun 2021 00:00:00 +0800</pubDate>
+      <gui>/posts/2021/06/21/Java%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0.html</gui>
+    </item>
+    <item>
       <title>朴素贝叶斯法</title>
       <link>/posts/2021/03/08/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF.html</link>
-      <description>朴素贝叶斯法[toc]摘录自《统计学习方法》朴素贝叶斯（NaiveBayes）法是基于贝叶斯定理和特征条件独立假设的分类方法。对于给定的训练数据集，首先基于特征条件独立假设学习输入输出的联合概率分布；然后基于此模型，对给定的输入$x$...</description>
+      <description>朴素贝叶斯法摘录自《统计学习方法》朴素贝叶斯（NaiveBayes）法是基于贝叶斯定理和特征条件独立假设的分类方法。对于给定的训练数据集，首先基于特征条件独立假设学习输入输出的联合概率分布；然后基于此模型，对给定的输入$x$，利用贝叶...</description>
       <pubDate>Mon, 08 Mar 2021 00:00:00 +0800</pubDate>
       <gui>/posts/2021/03/08/%E6%9C%B4%E7%B4%A0%E8%B4%9D%E5%8F%B6%E6%96%AF.html</gui>
     </item>
     <item>
       <title>支持向量机</title>
       <link>/posts/2021/03/07/SVM.html</link>
-      <description>支持向量机（SVM）[toc]本文摘录《统计学习方法》SVM简介支持向量机（supportvectormachines，SVM）是一种二分类模型。SVM的基础模型是定义在特征空间上的间隔最大的线性分类器，间隔最大使它有别于感知机；SV...</description>
+      <description>支持向量机（SVM）本文摘录《统计学习方法》SVM简介支持向量机（supportvectormachines，SVM）是一种二分类模型。SVM的基础模型是定义在特征空间上的间隔最大的线性分类器，间隔最大使它有别于感知机；SVM还包括核...</description>
       <pubDate>Sun, 07 Mar 2021 00:00:00 +0800</pubDate>
       <gui>/posts/2021/03/07/SVM.html</gui>
     </item>
     <item>
       <title>隐马尔可夫模型</title>
       <link>/posts/2021/03/06/HMM.html</link>
-      <description>隐马尔可夫模型（HMM）[toc]本文摘抄自《统计学习方法》隐马尔可夫模型（HiddenMarkovModel,HMM）是可用于标注问题的统计学习模型，描述由隐藏的马尔科夫链随机生成观测序列的过程，属于生成模型。HMM的基本概念HMM...</description>
+      <description>隐马尔可夫模型（HMM）本文摘抄自《统计学习方法》隐马尔可夫模型（HiddenMarkovModel,HMM）是可用于标注问题的统计学习模型，描述由隐藏的马尔科夫链随机生成观测序列的过程，属于生成模型。HMM的基本概念HMM是关于时序...</description>
       <pubDate>Sat, 06 Mar 2021 00:00:00 +0800</pubDate>
       <gui>/posts/2021/03/06/HMM.html</gui>
     </item>
     <item>
       <title>条件随机场</title>
       <link>/posts/2021/03/05/CRF.html</link>
-      <description>条件随机场（CRF）[toc]图来自Anintroductiontoconditionalrandomfields本文摘抄自《统计学习方法》条件随机场（ConditionalRandomField,CRF）是给定一组输入随机变量条件下...</description>
+      <description>条件随机场（CRF）图来自Anintroductiontoconditionalrandomfields本文摘抄自《统计学习方法》条件随机场（ConditionalRandomField,CRF）是给定一组输入随机变量条件下另一组输出...</description>
       <pubDate>Fri, 05 Mar 2021 00:00:00 +0800</pubDate>
       <gui>/posts/2021/03/05/CRF.html</gui>
     </item>
     <item>
       <title>梯度下降算法的更新概述</title>
       <link>/posts/2021/03/04/GD%E7%9A%84%E6%9B%B4%E6%96%B0%E6%A6%82%E8%BF%B0.html</link>
-      <description>最近的梯度下降算法的更新概述[toc]对之前的总结和补充VanillaGradientDescent现代深度学习优化器的故事始于朴素梯度下降。朴素梯度下降遵循以下迭代，具有一定的学习速率参数$\eta$：其中loss是从整个训练数据集...</description>
+      <description>最近的梯度下降算法的更新概述对之前的总结和补充VanillaGradientDescent现代深度学习优化器的故事始于朴素梯度下降。朴素梯度下降遵循以下迭代，具有一定的学习速率参数$\eta$：其中loss是从整个训练数据集中随机抽取...</description>
       <pubDate>Thu, 04 Mar 2021 00:00:00 +0800</pubDate>
       <gui>/posts/2021/03/04/GD%E7%9A%84%E6%9B%B4%E6%96%B0%E6%A6%82%E8%BF%B0.html</gui>
     </item>
     <item>
       <title>梯度下降优化算法总览</title>
       <link>/posts/2021/03/03/GD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%E6%80%BB%E8%A7%88.html</link>
-      <description>梯度下降优化算法总览[toc]优化指的是改变$\theta$以最小化或最大化某个函数$J(\theta)$的任务。我们通常以最小化$J(\theta)$指代大多数最优化问题。最大化可经由最小化算法最小化$-J(\theta)$来实现。...</description>
+      <description>梯度下降优化算法总览优化指的是改变$\theta$以最小化或最大化某个函数$J(\theta)$的任务。我们通常以最小化$J(\theta)$指代大多数最优化问题。最大化可经由最小化算法最小化$-J(\theta)$来实现。我们把要最...</description>
       <pubDate>Wed, 03 Mar 2021 00:00:00 +0800</pubDate>
       <gui>/posts/2021/03/03/GD%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95%E6%80%BB%E8%A7%88.html</gui>
     </item>
