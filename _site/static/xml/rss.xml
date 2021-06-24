@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>EmiyaCC Blog</title>
+    <title>EmiyaCC 摘录室</title>
     <link></link>
     <description>EmiyaCC的个人博客</description>
     <language>zh-CN</language>
-    <pubDate>Tue, 22 Jun 2021 20:30:29 +0800</pubDate>
-    <lastBuildDate>Tue, 22 Jun 2021 20:30:29 +0800</lastBuildDate>
+    <pubDate>Wed, 23 Jun 2021 20:01:18 +0800</pubDate>
+    <lastBuildDate>Wed, 23 Jun 2021 20:01:18 +0800</lastBuildDate>
     <generator>Jekyll v3.8.5</generator>
     <atom:link href="/static/xml/rss.xml" rel="self" type="application/rss+xml" />
     <item>
@@ -33,7 +33,7 @@
     <item>
       <title>完全二叉树</title>
       <link>/posts/2021/06/21/%E4%BA%8C%E5%8F%89%E6%A0%91-%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91.html</link>
-      <description>s求完全二叉树的节点个数，有两种做法，第一种是当成二叉树一个一个求节点个数；第二种是求左右子树的高度，因为已知是完全二叉树，所以到最后必然是左右子树高度一致完全二叉树的节点个数classSolution{publicintcountN...</description>
+      <description>求完全二叉树的节点个数，有两种做法，第一种是当成二叉树一个一个求节点个数；第二种是求左右子树的高度，因为已知是完全二叉树，所以到最后必然是左右子树高度一致完全二叉树的节点个数classSolution{publicintcountNo...</description>
       <pubDate>Mon, 21 Jun 2021 00:00:00 +0800</pubDate>
       <gui>/posts/2021/06/21/%E4%BA%8C%E5%8F%89%E6%A0%91-%E5%AE%8C%E5%85%A8%E4%BA%8C%E5%8F%89%E6%A0%91.html</gui>
     </item>
