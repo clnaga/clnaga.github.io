@@ -1,7 +1,7 @@
 ---
 layout: mypost
 title: Java Spring
-categories: [Java面试]
+categories: [Java]
 ---
 
 
