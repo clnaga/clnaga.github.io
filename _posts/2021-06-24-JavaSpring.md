@@ -38,9 +38,9 @@ Spring可以将简单的组件配置、组合成为复杂的应用。在Spring�
 
 所有Spring的这些特征使你能够编写更干净、更可管理、并且更易于测试的代码。它们也为Spring中的各种模块提供了基础支持。
 
-### 解释一下什么是 aop？
+### 解释一下什么是 AOP？
 
-AOP（Aspect-Oriented Programming，面向方面编程），可以说是OOP（Object-Oriented Programing，面向对象编程）的补充和完善。OOP引入封装、继承和多态性等概念来建立一种对象层次结构，用以模拟公共行为的一个集合。当我们需要为分散的对象引入公共行为的时候，OOP则显得无能为力。也就是说，OOP允许你定义从上到下的关系，但并不适合定义从左到右的关系。例如日志功能。日志代码往往水平地散布在所有对象层次中，而与它所散布到的对象的核心功能毫无关系。对于其他类型的代码，如安全性、异常处理和透明的持续性也是如此。这种散布在各处的无关的代码被称为横切（cross-cutting）代码，在OOP设计中，它导致了大量代码的重复，而不利于各个模块的重用。
+AOP（Aspect-Oriented Programming，面向切面编程），可以说是OOP（Object-Oriented Programing，面向对象编程）的补充和完善。OOP引入封装、继承和多态性等概念来建立一种对象层次结构，用以模拟公共行为的一个集合。当我们需要为分散的对象引入公共行为的时候，OOP则显得无能为力。也就是说，OOP允许你定义从上到下的关系，但并不适合定义从左到右的关系。例如日志功能。日志代码往往水平地散布在所有对象层次中，而与它所散布到的对象的核心功能毫无关系。对于其他类型的代码，如安全性、异常处理和透明的持续性也是如此。这种散布在各处的无关的代码被称为横切（cross-cutting）代码，在OOP设计中，它导致了大量代码的重复，而不利于各个模块的重用。
 
 而AOP技术则恰恰相反，它利用一种称为“横切”的技术，剖解开封装的对象内部，并将那些影响了多个类的公共行为封装到一个可重用模块，并将其名为“Aspect”，即方面。所谓“方面”，简单地说，就是将那些与业务无关，却为业务模块所共同调用的逻辑或责任封装起来，便于减少系统的重复代码，降低模块间的耦合度，并有利于未来的可操作性和可维护性。AOP代表的是一个横向的关系，如果说“对象”是一个空心的圆柱体，其中封装的是对象的属性和行为；那么面向方面编程的方法，就仿佛一把利刃，将这些空心圆柱体剖开，以获得其内部的消息。而剖开的切面，也就是所谓的“方面”了。然后它又以巧夺天功的妙手将这些剖开的切面复原，不留痕迹。
 
@@ -72,6 +72,34 @@ IOC理论提出的观点大体是这样的：借助于“第三方”实现具�
 
 通过前后的对比，我们不难看出来：对象A获得依赖对象B的过程,由主动行为变为了被动行为，控制权颠倒过来了，这就是“控制反转”这个名称的由来。
 
+### Spring Bean 生命周期
+
+Spring 框架中的 Bean 经过四个阶段：实例化 -> 属性赋值 -> 初始化 -> 销毁
+
+1. 实例化：new xxx(); 
+
+   两个时机：当客户端向容器申请一个 Bean 时；当容器在初始化一个 Bean 时发现还需要依赖另一个 Bean（利用 BeanDefinition 反射实例化一个对象）
+
+2. 设置对象属性（依赖注入）：Spring 通过 BeanDefinition 找到对象依赖的其他对象，并将这些对象赋予当前对象
+
+3. 处理 Aware 接口：Spring 会检测对象是否实现了 xxxAware 接口，如果实现了，就会调用对应的方法：BeanNameAware、BeanClassLoaderAware、BeanFactoryAware、ApplicationContextAware
+
+   > Aware 是一个具有标识作用的超级接口，实现该接口的 Bean 是具有被Spring 容器通知的能力的，而被通知的方式就是通过回调。也就是说：直接或间接实现了这个接口的类，都具有被 Spring 容器通知的能力。Spring Aware 的目的是为了让 Bean 获得 Spring 容器的服务。
+
+4. BeanPostProcessor 前置处理
+
+5. InitializingBean：Spring 检测对象如果实现了这个接口，会执行它的 afterPropertiesSet() 方法，定制初始化逻辑
+
+6. init-method：<bean init-method=xxx> 如果 Spring 发现 Bean 配置了这个属性，会调用它的配置方法，执行初始化逻辑。注解 @PostConstruct
+
+7. BeanPostProcessor 后置处理
+
+   > 到这里 Bean 的创建过程就完成了，Bean 可用正常使用了
+
+8. DisposableBean：当 Bean 实现了这个接口，在对象销毁时会调用 destroy() 方法
+
+9. destroy-method：<bean destroy-method=xxx> @PreDestroy 如果这个 Bean 的 Spring 配置中配置了 destroy-method 属性，会自动调用其配置的销毁方法
+
 ### spring 常用的注入方式有哪些？
 
 Spring通过DI（依赖注入）实现IOC（控制反转），常用的注入方式主要有三种：
@@ -79,6 +107,17 @@ Spring通过DI（依赖注入）实现IOC（控制反转），常用的注入方
 1. 构造方法注入
 2. setter注入
 3. 基于注解的注入
+
+### spring 自动装配 bean 有哪些方式？
+
+Spring容器负责创建应用程序中的bean同时通过ID来协调这些对象之间的关系。作为开发人员，我们需要告诉Spring要创建哪些bean并且如何将其装配到一起。
+
+spring中bean装配有两种方式：
+
+- 隐式的bean发现机制和自动装配
+- 在java代码或者XML中进行显示配置
+
+当然这些方式也可以配合使用。
 
 ### spring 中的 bean 是线程安全的吗？
 
@@ -98,17 +137,6 @@ Spring容器中的Bean是否线程安全，容器本身并没有提供Bean的线
 
 如果不指定Bean的作用域，Spring默认使用singleton作用域。Java在创建Java实例时，需要进行内存申请；销毁实例时，需要完成垃圾回收，这些工作都会导致系统开销的增加。因此，prototype作用域Bean的创建、销毁代价比较大。而singleton作用域的Bean实例一旦创建成功，可以重复使用。因此，除非必要，否则尽量避免将Bean被设置成prototype作用域。
 
-### spring 自动装配 bean 有哪些方式？
-
-Spring容器负责创建应用程序中的bean同时通过ID来协调这些对象之间的关系。作为开发人员，我们需要告诉Spring要创建哪些bean并且如何将其装配到一起。
-
-spring中bean装配有两种方式：
-
-- 隐式的bean发现机制和自动装配
-- 在java代码或者XML中进行显示配置
-
-当然这些方式也可以配合使用。
-
 ### spring 事务实现方式有哪些？
 
 1. 编程式事务管理对基于 POJO 的应用来说是唯一选择。我们需要在代码中调用beginTransaction()、commit()、rollback()等事务管理相关的方法，这就是编程式事务管理。
@@ -124,13 +152,27 @@ spring中bean装配有两种方式：
 - 幻读：例如第一个事务对一个表中的数据进行了修改，比如这种修改涉及到表中的“全部数据行”。同时，第二个事务也修改这个表中的数据，这种修改是向表中插入“一行新数据”。那么，以后就会发生操作第一个事务的用户发现表中还存在没有修改的数据行，就好象发生了幻觉一样。
 - 不可重复读：比方说在同一个事务中先后执行两条一模一样的select语句，期间在此次事务中没有执行过任何DDL语句，但先后得到的结果不一致，这就是不可重复读。
 
-### Spring MVC 待补充
+### Spring MVC 介绍
 
-https://mp.weixin.qq.com/s/eHK5wqAv5UgYoYUnpFCxzA
+SpringMVC 是 Spring 对 Web 框架的一个解决方案。Spring 的模型-视图-控制器（MVC）提供了一个总的前端控制器 Servlet，用来接受请求，然后定义了一套路由策略（url 到 handler 的映射）及适配执行 handler，将 handler 结果使用视图解析技术生成视图展示给前端
+
+### Spring MVC 工作流程
+
+1. 用户请求：用户发送请求到前端控制器 DispatcherServlet
+2. 寻找处理器：DispatcherServlet 收到请求调用 HandlerMapping 处理器映射器
+3. 调用处理器：DispatcherServlet 调用 HandlerAdapter 处理器适配器
+4. 处理请求：HandlerAdapter 经过适配器调用具体的处理器处理请求（Controller，也叫后端控制器）
+5. 返回 ModelAndView：Controller 执行完成返回 ModelAndView
+6. 处理视图映射：DispatcherServlet 将 ModelAndView 传给 ViewReslover 视图解析器，找到ModelAndView指定的视图
+7. 响应用户：DispatcherServlet 根据 View 进行渲染视图（将模型数据填充到视图中），并响应用户
+
+![SpringMVC流程](SpringMVC流程.png)
+
+待补充：https://mp.weixin.qq.com/s/eHK5wqAv5UgYoYUnpFCxzA
 
 ### 什么是 spring boot？
 
-在Spring框架这个大家族中，产生了很多衍生框架，比如 Spring、SpringMvc框架等，Spring的核心内容在于控制反转(IOC)和依赖注入(DI),所谓控制反转并非是一种技术，而是一种思想，在操作方面是指在spring配置文件中创建<bean>，依赖注入即为由spring容器为应用程序的某个对象提供资源，比如 引用对象、常量数据等。
+在Spring框架这个大家族中，产生了很多衍生框架，比如 Spring、SpringMMC框架等，Spring的核心内容在于控制反转(IOC)和依赖注入(DI),所谓控制反转并非是一种技术，而是一种思想，在操作方面是指在spring配置文件中创建<bean>，依赖注入即为由spring容器为应用程序的某个对象提供资源，比如 引用对象、常量数据等。
 
 SpringBoot是一个框架，一种全新的编程规范，他的产生简化了框架的使用，所谓简化是指简化了Spring众多框架中所需的大量且繁琐的配置文件，所以 SpringBoot是一个服务于框架的框架，服务范围是简化配置文件。
 
