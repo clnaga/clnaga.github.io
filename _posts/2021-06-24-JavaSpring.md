@@ -195,6 +195,206 @@ Spring Boot提供了两种常用的配置文件：
 - properties文件
 - yml文件
 
+### Spring Boot 自动装配原理
+
+**什么是 Spring Boot 自动装配**
+
+SpringBoot 定义了一套接口规范，在 SpringBoot 启动时会扫描外部引用 jar 包中的 spring.factories 文件，将文件中配置的类型信息加载到 Spring 容器中，并执行类中定义的各种操作。对于外部 jar 包来说，只需要按照 SpringBoot 定义的标准，就能将自己的功能装置进SpringBoot 中
+
+**SpringBoot 是如何实现自动装配**
+
+通过注解或者一些简单的配置就能在 Spring Boot 的帮助下实现某块功能
+
+> 1. [面试常问：“讲述一下 SpringBoot 自动装配原理？”](https://www.cnblogs.com/javaguide/p/springboot-auto-config.html){:target="_blank"}
+
+### Spring / SpringBoot 常用注解
+
+1. `@SpringBootApplication`
+
+   > 这个注解是 SpringBoot 项目的基石，创建 SpringBoot 项目之后会默认在主类上
+   >
+   > 可以看作是 `@Configuration`、`@EnableAutoConfiguration`、`@ComponentScan` 注解的集合
+   >
+   > - `@Configuration`：允许在 Spring 上下文中注册额外的 bean 或导入其他配置类
+   >
+   > - `@EnableAutoConfiguration`：启用 SpringBoot 的自动配置机制
+   > - `@ComponentScan`： 扫描被`@Component` (`@Service`,`@Controller`)注解的 bean，注解默认会扫描该类所在的包下所有的类。
+
+2. Spring Bean 相关
+
+   1. `@Autowired`
+
+      > 自动导入对象到类中，被注入进的类同样要被 Spring 容器管理比如：Service 类注入到 Controller 类中
+      >
+      > ```java
+      > @Service
+      > public class UserService {
+      >   ......
+      > }
+      > 
+      > @RestController
+      > @RequestMapping("/users")
+      > public class UserController {
+      >    @Autowired
+      >    private UserService userService;
+      >    ......
+      > }
+      > ```
+
+   2. `@Component`,`@Repository`,`@Service`, `@Controller`
+
+      > 我们一般使用 `@Autowired` 注解让 Spring 容器帮我们自动装配 bean。要想把类标识成可用于 `@Autowired` 注解自动装配的 bean 的类,可以采用以下注解实现
+      >
+      > - `@Component` ：通用的注解，可标注任意类为 `Spring` 组件。如果一个 Bean 不知道属于哪个层，可以使用`@Component` 注解标注。
+      > - `@Repository` : 对应持久层即 Dao 层，主要用于数据库相关操作。
+      > - `@Service` : 对应服务层，主要涉及一些复杂的逻辑，需要用到 Dao 层。
+      > - `@Controller` : 对应 Spring MVC 控制层，主要用于接受用户请求并调用 Service 层返回数据给前端页面
+
+   3. `@RestController`
+
+      > `@RestController`注解是`@Controller和`@`ResponseBody`的合集,表示这是个控制器 bean,并且是将函数的返回值直 接填入 HTTP 响应体中,是 REST 风格的控制器
+
+   4. `@Scope`
+
+      > ```java
+      > @Bean
+      > @Scope("singleton")
+      > public Person personSingleton() {
+      >     return new Person();
+      > }
+      > ```
+      >
+      > **常见的 Spring Bean 的作用域：**
+      >
+      > - singleton : 唯一 bean 实例，Spring 中的 bean 默认都是单例的。
+      > - prototype : 每次请求都会创建一个新的 bean 实例。
+      > - request : 每一次 HTTP 请求都会产生一个新的 bean，该 bean 仅在当前 HTTP request 内有效。
+      > - session : 每一次 HTTP 请求都会产生一个新的 bean，该 bean 仅在当前 HTTP session 内有效。
+
+   5. `@Configuration`
+
+      > 一般用来声明配置类，可以使用 `@Component`注解替代，不过使用`@Configuration`注解声明配置类更加语义化
+      >
+      > ```java
+      > @Configuration
+      > public class AppConfig {
+      >     @Bean
+      >     public TransferService transferService() {
+      >         return new TransferServiceImpl();
+      >     }
+      > 
+      > }
+      > ```
+
+3.  处理常见的 HTTP 请求类型
+
+   **5 种常见的请求类型:**
+
+   - **GET** ：请求从服务器获取特定资源。举个例子：`GET /users`（获取所有学生）
+
+     ```java
+     @GetMapping("/users")
+     public ResponseEntity<List<User>> getAllUsers() {
+     	return userRepository.findAll();
+     }
+     ```
+
+   - **POST** ：在服务器上创建一个新的资源。举个例子：`POST /users`（创建学生）
+
+     ```java
+     @PostMapping("/users")
+     public ResponseEntity<User> createUser(@Valid @RequestBody UserCreateRequest userCreateRequest) {
+      	return userRespository.save(user);
+     }
+     ```
+
+   - **PUT** ：更新服务器上的资源（客户端提供更新后的整个资源）。举个例子：`PUT /users/12`（更新编号为 12 的学生）
+
+     ```java
+     @PutMapping("/users/{userId}")
+     public ResponseEntity<User> updateUser(@PathVariable(value = "userId") Long userId,
+       @Valid @RequestBody UserUpdateRequest userUpdateRequest) {
+       	......
+     }
+     ```
+
+   - **DELETE** ：从服务器删除特定的资源。举个例子：`DELETE /users/12`（删除编号为 12 的学生）
+
+     ```java
+     @DeleteMapping("/users/{userId}")
+     public ResponseEntity deleteUser(@PathVariable(value = "userId") Long userId){
+       	......
+     }
+     ```
+
+   - **PATCH** ：更新服务器上的资源（客户端提供更改的属性，可以看做作是部分更新），使用的比较少，这里就不举例子了。
+
+     ```java
+     @PatchMapping("/profile")
+       public ResponseEntity updateStudent(@RequestBody StudentUpdateRequest studentUpdateRequest){
+           studentRepository.updateDetail(studentUpdateRequest);
+           return ResponseEntity.ok().build();
+       }
+     ```
+
+4. 前后端传值
+
+   1. `@PathVariable` 和 `@RequestParam`
+   2. `@RequestBody`
+
+5. 读取配置信息
+
+   数据源 `application.yml`:
+
+   ```yaml
+   wuhan2020: 2020年初武汉爆发了新型冠状病毒，疫情严重，但是，我相信一切都会过去！武汉加油！中国加油！
+   
+   my-profile:
+     name: Guide哥
+     email: koushuangbwcx@163.com
+   
+   library:
+     location: 湖北武汉加油中国加油
+     books:
+       - name: 天才基本法
+         description: 二十二岁的林朝夕在父亲确诊阿尔茨海默病这天
+       - name: 时间的秩序
+         description: 为什么我们记得过去，而非未来？时间“流逝”意味着什么？
+       - name: 了不起的我
+         description: 如何养成一个新习惯？如何让心智变得更成熟？
+   ```
+
+   1. `@value`
+
+      ```java
+      @Value("${wuhan2020}")
+      String wuhan2020;
+      ```
+
+   2. `@ConfigurationProperties`
+
+      ```java
+      @Component
+      @ConfigurationProperties(prefix = "library")
+      class LibraryProperties {
+          @NotEmpty
+          private String location;
+          private List<Book> books;
+      
+          @Setter
+          @Getter
+          @ToString
+          static class Book {
+              String name;
+              String description;
+          }
+        省略getter/setter
+        ......
+      }
+      ```
+
+> [Spring/Spring Boot 常用注解总结！安排！](https://github.com/Snailclimb/JavaGuide/blob/master/docs/system-design/framework/spring/SpringBoot+Spring常用注解总结.md){:target="_blank"}
+
 ### Spring Cloud 待补充
 
 https://mp.weixin.qq.com/s/UscOEtOBq5qjy1-SJLYtaw
