@@ -21,20 +21,28 @@ countDownLatch这个类使一个线程等待其他线程各自执行完毕后再
 在某些业务场景中，程序执行需要等待某个条件完成后才能继续执行后续的操作；典型的应用如并行计算，当某个处理的运算量很大时，可以将该运算任务拆分成多个子任务，等待所有的子任务都完成之后，父任务再拿到所有子任务的运算结果进行汇总。
 
 ```java
-final CountDownLatch latch = new CountDownLatch(2);
-for (int i = 0; i < 2; i ++) {
-    new Thread(new Runnable() {
-        @Override
-        public void run() {
-            System.out.println(Thread.currentThread().getName() + "start");
-            Thread.sleep(1000);
-            System.out.println(Thread.currentThread().getName() + "end");
-            latch.countDown();
+public class Main {
+    public static void main(String[] args) throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(2);
+        for (int i = 0; i < 2; i ++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println(Thread.currentThread().getName() + "start");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println(Thread.currentThread().getName() + "end");
+                    latch.countDown();
+                }
+            }).start();
         }
-    }).start();
-    System.out.println("waiting");
-    latch.await();
-    System.out.println("finish all threads");
+        System.out.println("waiting");
+        latch.await();
+        System.out.println("finish all threads");
+    }
 }
 ```
 
@@ -52,25 +60,30 @@ CyclicBarrier也是一个同步辅助类，它允许一组线程相互等待，�
 
 ```java
 public static void main(String[] args) {
-    CyclicBarrier barrier = new CyclicBarrier(3);
-    for (int i = 0; i < 9; i ++) {
-        new Writer(barrier).start();
+        CyclicBarrier cyclicBarrier = new CyclicBarrier(3, new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("go");
+            }
+        });
+        for (int i = 0; i < 9; i ++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        System.out.println(Thread.currentThread().getName() + "start");
+                        Thread.sleep(1000);
+                        cyclicBarrier.await();
+                        System.out.println(Thread.currentThread().getName() + "end");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (BrokenBarrierException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
     }
-}
-static class Writer extends Thread {
-    private CyclicBarrier cyclicBarrier;
-    public Writer(CyclicBarrier cyclicBarrier) {
-        this.cyclicBarrier = cyclicBarrier;
-    }
-    @Override
-    public void run() {
-        System.out.println(Thread.currentThread().getName() + "start");
-        Thread.sleep(1000);
-        System.out.println(Thread.currentThread().getName() + "end");
-        cyclicBarrier.await();
-        System.out.println("finish all threads");
-    }
-}
 ```
 
 ## Semaphore
