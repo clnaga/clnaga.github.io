@@ -76,6 +76,35 @@ IoC理论提出的观点大体是这样的：借助于“第三方”实现具�
 
 通过前后的对比，我们不难看出来：对象A获得依赖对象B的过程,由主动行为变为了被动行为，控制权颠倒过来了，这就是“控制反转”这个名称的由来。
 
+> [为什么Spring中的IOC能够降低耦合性？](https://blog.csdn.net/tinpo_123/article/details/108718367){:target="_blank"}
+
+### Spring 启动过程
+
+> [Spring启动过程（面试总结版~）](https://blog.csdn.net/hjukyjhg56/article/details/108529552){:target="_blank"}
+>
+> [高级面试题--SpringBoot启动流程解析 ](https://blog.csdn.net/hfmbook/article/details/100507083){:target="_blank"}
+
+### SpringBoot 自动配置
+
+@SpringBootApplication
+
+ 1. SpringBootConfiguration
+
+    > 任何一个标注了@Configuration的Java类定义都是一个JavaConfig配置类。
+    > 任何一个标注了@Bean的方法，其返回值将作为一个bean定义注册到Spring的IoC容器，方法名将默认成该bean定义的id
+
+ 2. ComponetScan
+
+    > @ComponentScan的功能其实就是自动扫描并加载符合条件的组件（比如@Component和@Repository等）或者bean定义，最终将这些bean定义加载到IoC容器中
+
+ 3. EnableAutoConfiguration
+
+    > 借助@Import的帮助，将所有符合自动配置条件的bean定义加载到IoC容器
+    >
+    > 借助EnableAutoConfigurationImportSelector，@EnableAutoConfiguration可以帮助SpringBoot应用将所有符合条件的@Configuration配置都加载到当前SpringBoot创建并使用的IoC容器。该配置模块的主要使用到了SpringFactoriesLoader
+
+> [一个面试题引起的SpringBoot启动解析](https://juejin.cn/post/6844903652201594887){:target="_blank"}
+
 ### Spring Bean 生命周期
 
 Spring 框架中的 Bean 经过四个阶段：实例化 -> 属性赋值 -> 初始化 -> 销毁
